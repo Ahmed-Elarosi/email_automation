@@ -19,3 +19,28 @@ def create_email(subject, body):
     msg.attach(MIMEText(body, 'plain'))
     return msg
 
+# Function to send the email
+def send_email(subject, body):
+    msg = create_email(subject, body)
+    try:
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.send_message(msg)
+            print("Email sent successfully")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
+# Function to generate the daily report
+def generate_daily_report():
+    # Placeholder for report content; replace with actual data generation logic
+    report_content = "This is your daily report content."
+    send_email("Daily Report", report_content)
+
+# Schedule the task to run daily at a specific time (e.g., 8 AM)
+schedule.every().day.at("23:07").do(generate_daily_report)
+
+# Main loop to keep the script running and checking the schedule
+while True:
+    schedule.run_pending()
+    time.sleep(1)
